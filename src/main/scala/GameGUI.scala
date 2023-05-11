@@ -155,7 +155,6 @@ class VentanaDatos(ini: Long) extends MainFrame {
 
 class VentanaJuegoManual(matriz: List[Int], nivel: Int, fila: Int, col: Int, vidas: Int, puntuacion: Int, ini: Long) extends MainFrame {
   preferredSize = new Dimension(800, 800)
-  title = "Juego manual"
   // Crear el panel de la cuadrícula
   private val gridPanelPrincipal = generarGrid(matriz, fila, col)
 
@@ -181,14 +180,14 @@ class VentanaJuegoManual(matriz: List[Int], nivel: Int, fila: Int, col: Int, vid
       for (f <- 0 until fila; c <- 0 until col) {
         val index = f * col + c
         val color = new GameLogic().getElem(index, matriz) match {
-          case 1 => Color.RED
-          case 2 => Color.GREEN
-          case 3 => Color.BLUE
-          case 4 => Color.WHITE
-          case 5 => Color.YELLOW
-          case 6 => Color.ORANGE
-          case 7 => Color.PINK
-          case 8 => Color.CYAN
+          case 1 => Color.BLUE
+          case 2 => Color.RED
+          case 3 => Color.ORANGE
+          case 4 => Color.GREEN
+          case 5 => Color.MAGENTA
+          case 6 => Color.YELLOW
+          case 7 => Color.LIGHT_GRAY
+          case 8 => Color.GRAY
           case _ => Color.BLACK // Si se proporciona un número de color no válido, se establece en negro
         }
         val button = new Button(" ")
@@ -227,7 +226,6 @@ class VentanaJuegoManual(matriz: List[Int], nivel: Int, fila: Int, col: Int, vid
 
 class VentanaJuegoAutomatico(matriz: List[Int], nivel: Int, fila: Int, col: Int, vidas: Int, puntuacion: Int, ini: Long) extends MainFrame {
   preferredSize = new Dimension(800, 800)
-  title = "Juego automatico"
   // Crear el panel de la cuadrícula
   private val gridPanelPrincipal = generarGrid(matriz, fila, col)
 
@@ -282,14 +280,14 @@ class VentanaJuegoAutomatico(matriz: List[Int], nivel: Int, fila: Int, col: Int,
       for (f <- 0 until fila; c <- 0 until col) {
         val index = f * col + c
         val color = new GameLogic().getElem(index, matriz) match {
-          case 1 => Color.RED
-          case 2 => Color.GREEN
-          case 3 => Color.BLUE
-          case 4 => Color.WHITE
-          case 5 => Color.YELLOW
-          case 6 => Color.ORANGE
-          case 7 => Color.PINK
-          case 8 => Color.CYAN
+          case 1 => Color.BLUE
+          case 2 => Color.RED
+          case 3 => Color.ORANGE
+          case 4 => Color.GREEN
+          case 5 => Color.MAGENTA
+          case 6 => Color.YELLOW
+          case 7 => Color.LIGHT_GRAY
+          case 8 => Color.GRAY
           case _ => Color.BLACK // Si se proporciona un número de color no válido, se establece en negro
         }
         val button = new Button(" ")
