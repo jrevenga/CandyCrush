@@ -205,8 +205,8 @@ class VentanaJuegoManual(matriz: List[Int], nivel: Int, fila: Int, col: Int, vid
           if (vidasFinal == 0) {
             //Fin del juego
             val res = Dialog.showConfirmation(contents.head,
-              "¡HAS PERDIDO!\n" +
-                s"su puntación es: $puntuacionFinal",
+              "GAME OVER\n" +
+                s"Puntación: $puntuacionFinal",
               optionType = Dialog.Options.Default,
               title = title)
             // Enviar datos y multiplicar por el nivel
@@ -271,7 +271,7 @@ class VentanaJuegoAutomatico(matriz: List[Int], nivel: Int, fila: Int, col: Int,
       }
       contents += Swing.HGlue
       contents += botonSig
-      contents += Swing.HStrut(100)
+      contents += Swing.HStrut(280)
       contents += closeButton
     }) = BorderPanel.Position.South
     layout(labelVidas) = BorderPanel.Position.North
@@ -292,7 +292,7 @@ class VentanaJuegoAutomatico(matriz: List[Int], nivel: Int, fila: Int, col: Int,
           case 8 => Color.CYAN
           case _ => Color.BLACK // Si se proporciona un número de color no válido, se establece en negro
         }
-        val button = new Button("I")
+        val button = new Button(" ")
         button.background = color
         contents += button
       }
