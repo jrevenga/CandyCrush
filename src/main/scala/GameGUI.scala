@@ -1,8 +1,8 @@
 import java.awt.{Color, Dimension}
 import javax.imageio.ImageIO
-import javax.swing.{ImageIcon, JSpinner}
-import scala.swing.event.ButtonClicked
+import javax.swing.ImageIcon
 import scala.swing._
+import scala.swing.event.ButtonClicked
 
 object GuiProgramFive {
   def main(args: Array[String]): Unit = {
