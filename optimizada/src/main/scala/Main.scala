@@ -32,15 +32,18 @@ object Main {
           val fila = readLine().toInt -1
           print("Ingrese el número de columna:")
           val columna = readLine().toInt -1
-
           val pos = fila * numColumns + columna
-          val (newBoard, newLives) = game.gameManual(board, numRows, numColumns, difficultyLevel, lives, pos)
+          val (newBoard, newLives) = game.game(board, numRows, numColumns, difficultyLevel, lives, pos)
           playGame(game, newBoard, numRows, numColumns, difficultyLevel, mode, newLives)
         }
         case "a" => {
           print("Press Enter")
           scala.io.StdIn.readLine() // Espera hasta que el usuario presione Enter
-          val (newBoard, newLives) = game.gameAuto(board, numRows, numColumns, difficultyLevel, lives)
+
+          val (mejorPos, borrados) = game.mejorPosicion(board, 0, -1, -1, numRows, numColumns)
+
+          println(s"Posición elegida: $mejorPos, Bloques borrados: $borrados")
+          val (newBoard, newLives) = game.game(board, numRows, numColumns, difficultyLevel, lives, mejorPos)
           playGame(game, newBoard, numRows, numColumns, difficultyLevel, mode, newLives)
         }
       }

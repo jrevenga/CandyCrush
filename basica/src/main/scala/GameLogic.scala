@@ -3,11 +3,11 @@ import scala.util.Random
 
   class GameLogic {
 
-    // Función para jugar manualmente al juego
-    def gameManual(tablero: List[Int], fila: Int, col: Int, dificultad: Int, vidas: Int, borrar: Int): (List[Int], Int) = {
+    // Función para jugar al juego
+    def game(tablero: List[Int], fila: Int, col: Int, dificultad: Int, vidas: Int, borrar: Int): (List[Int], Int) = {
 
       // Función auxiliar para modificar el tablero
-      def modificarTablero(tableroMod: List[Int], bonus: Int): (List[Int], Int) = {
+      def modificarTablero(tableroMod: List[Int]): (List[Int], Int) = {
         mostrarTablero(tableroMod, col)
         val tableroFin = subeYrellena(tableroMod, dificultad, col)
         mostrarTablero(tableroFin, col)
@@ -21,66 +21,38 @@ import scala.util.Random
           case 8 => bloqueTNT(tablero, borrar, fila, col)
           case _ => bloqueR(ponerValor(tablero, borrar, elem - 8), elem - 8)
         }
-        val bonus = elem match {
-          case 7 => 5
-          case 8 => 10
-          case _ => 15
-        }
-        modificarTablero(tableroMod, bonus)
+        modificarTablero(tableroMod)
       } else {
         // Bloque normal
         val tableroMod = posBorradas(tablero, borrar, fila, col, dificultad)
         tableroMod match {
           case Nil => println("Fallo! -1 vida"); (tablero, vidas - 1)
-          case _ => modificarTablero(tableroMod, 0)
+          case _ => modificarTablero(tableroMod)
         }
       }
     }
 
-    // Función para jugar automáticamente al juego
-    def gameAuto(tablero: List[Int], fila: Int, col: Int, dificultad: Int, vidas: Int): (List[Int], Int) = {
-
-      // Función auxiliar para aplicar una modificación al tablero
-      def modificarTableroYsubir(tableroMod: List[Int]): (List[Int], Int) = {
-        mostrarTablero(tableroMod, col)
-        val tableroFin = subeYrellena(tableroMod, dificultad, col) // Sube los ceros y rellena los huecos
-        mostrarTablero(tableroFin, col)
-        (tableroFin, vidas) // Devuelve el nuevo tablero junto con las vidas actuales
+    // Sube los ceros y rellena el tablero con números aleatorios
+    private def subeYrellena(tablero: List[Int], dificultad: Int, col: Int): List[Int] = {
+      def aux(pos: Int): List[Int] = pos match {
+        case _ if pos == col => Nil
+        case _ =>
+          val columna = getColumna(pos, tablero, col)
+          val nCeros = contarCeros(columna, 0)
+          val numeros = listaNumeros(columna)
+          val relleno = rellena(listaDeCeros(nCeros), dificultad)
+          concatenar(concatenar(relleno, numeros), aux(pos + 1))
       }
-      val rand = new scala.util.Random
-      val filaR = rand.nextInt(fila) // Genera un número aleatorio para la fila
-      val columna = rand.nextInt(col) // Genera un número aleatorio para la columna
-
-      val PosAleatoria = filaR * col + columna // Calcula la posición correspondiente
-      println(s"Posición elegida: $PosAleatoria")
-
-      // Obtén el elemento de la posición aleatoria
-      val elem = getElem(PosAleatoria, tablero)
-
-      // Verifica si el elemento es un bloque especial (>= 7)
-      if (elem >= 7) {
-        val n = rand.nextInt(1)
-        // Bloque especial
-        val tableroMod = elem match {
-          // Bloque Bomba
-          case 7 if fila == col => bloqueB(tablero, PosAleatoria, fila, col)
-          case 7 if n == 0 => borrarFila(tablero, 0, PosAleatoria / col, fila, col)
-          case 7 => borrarColumna(tablero, PosAleatoria % col, fila, col)
-          // Bloque TNT
-          case 8 => bloqueTNT(tablero, PosAleatoria, fila, col)
-          // Bloque Rompecabezas
-          case _ => bloqueR(ponerValor(tablero, PosAleatoria, elem - 8), elem - 8)
-        }
-        // Aplica la modificación al tablero y luego sube y rellena los ceros
-        modificarTableroYsubir(tableroMod)
-      } else {
-        // Bloque normal
-        val tableroMod = posBorradas(tablero, PosAleatoria, fila, col, dificultad)
-        tableroMod match {
-          case Nil => println("Fallo! -1 vida"); (tablero, vidas - 1)
-          case _ => modificarTableroYsubir(tableroMod)
-        }
-      }
+      traspuesta(aux(0), col)
+    }
+    def rellena(l: List[Int], dificultad: Int): List[Int] = l match {
+      case Nil => Nil
+      // Si el primer elemento es cero, genera un número aleatorio según el dificultad y lo agrega a la lista resultante
+      case 0 :: cola =>
+        val random = if (dificultad == 1) new Random().nextInt(4) + 1 else new Random().nextInt(6) + 1
+        random :: rellena(cola, dificultad)
+      // Si el primer elemento no es cero, simplemente lo agrega a la lista resultante
+      case cabeza :: cola => cabeza :: rellena(cola, dificultad)
     }
 
     // Genera una lista de ceros con longitud n
@@ -91,10 +63,9 @@ import scala.util.Random
       }
     }
 
-    private val random = new Random()
-
     private def posBorradas(tablero: List[Int], posBorrar: Int, fila: Int, col: Int, dificultad: Int): List[Int] = {
       val (tableroFin, nElim) = borrarPosicion(tablero, posBorrar, fila, col)
+      val random = new Random()
       if (nElim == 1) {
         Nil   // Si solo se ha eliminado un elemento, devolvemos Nil
       } else {
@@ -114,30 +85,6 @@ import scala.util.Random
         case 0 => valor :: tablero.tail
         case _ => tablero.head :: ponerValor(tablero.tail, pos - 1, valor)
       }
-    }
-
-    // Sube los ceros y rellena el tablero con números aleatorios
-    private def subeYrellena(tablero: List[Int], dificultad: Int, col: Int): List[Int] = {
-      def aux(pos: Int): List[Int] = pos match {
-        case _ if pos == col => Nil
-        case _ =>
-          val columna = getColumna(pos, tablero, col)
-          val nCeros = contarCeros(columna, 0)
-          val numeros = listaNumeros(columna)
-          val relleno = rellena(listaDeCeros(nCeros), dificultad)
-          concatenar(concatenar(relleno, numeros), aux(pos + 1))
-      }
-      traspuesta(aux(0), col)
-    }
-
-    def rellena(l: List[Int], dificultad: Int): List[Int] = l match {
-      case Nil => Nil
-      // Si el primer elemento es cero, genera un número aleatorio según el dificultad y lo agrega a la lista resultante
-      case 0 :: tail =>
-        val random = if (dificultad == 1) new Random().nextInt(4) + 1 else new Random().nextInt(6) + 1
-        random :: rellena(tail, dificultad)
-      // Si el primer elemento no es cero, simplemente lo agrega a la lista resultante
-      case head :: tail => head :: rellena(tail, dificultad)
     }
 
     private def listaDeCeros(n: Int): List[Int] = n match {

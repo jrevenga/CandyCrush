@@ -32,15 +32,20 @@ object Main {
           val fila = readLine().toInt -1
           print("Ingrese el número de columna:")
           val columna = readLine().toInt -1
-
           val pos = fila * numColumns + columna
-          val (newBoard, newLives) = game.gameManual(board, numRows, numColumns, difficultyLevel, lives, pos)
+          val (newBoard, newLives) = game.game(board, numRows, numColumns, difficultyLevel, lives, pos)
           playGame(game, newBoard, numRows, numColumns, difficultyLevel, mode, newLives)
         }
         case "a" => {
           print("Press Enter")
           scala.io.StdIn.readLine() // Espera hasta que el usuario presione Enter
-          val (newBoard, newLives) = game.gameAuto(board, numRows, numColumns, difficultyLevel, lives)
+          val rand = new scala.util.Random
+          val fila = rand.nextInt(numRows) // Genera un número aleatorio para la fila
+          val columna = rand.nextInt(numColumns) // Genera un número aleatorio para la columna
+          val posAleatoria = fila * numColumns + columna // Calcula la posición correspondiente
+          val f = fila +1; val c = columna +1
+          println(s"Posición elegida; Fila: $f, Columna: $c")
+          val (newBoard, newLives) = game.game(board, numRows, numColumns, difficultyLevel, lives, posAleatoria)
           playGame(game, newBoard, numRows, numColumns, difficultyLevel, mode, newLives)
         }
       }
